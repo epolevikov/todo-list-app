@@ -1,6 +1,5 @@
-package org.hhschool.todolist.dao;
+package org.hhschool.todolist;
 
-import org.hhschool.todolist.entity.TodoItem;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -12,8 +11,8 @@ import java.util.Optional;
 public class TodoListDao {
   private final List<TodoItem> todos = new LinkedList<>();
 
-  public void save(TodoItem item) {
-    todos.add(item);
+  public List<TodoItem> all() {
+    return todos;
   }
 
   public Optional<TodoItem> get(Long id) {
@@ -22,15 +21,18 @@ public class TodoListDao {
       .findFirst();
   }
 
-  public List<TodoItem> all() {
-    return todos;
+  public void save(TodoItem item) {
+    todos.add(item);
   }
 
-  public Optional<TodoItem> update(Long id, TodoItem newItem) {
-    return get(id).map(item -> {
+  public TodoItem update(TodoItem newItem) {
+    return get(newItem.getId()).map(item -> {
       item.setDescription(newItem.getDescription());
-      item.setStatus(newItem.getStatus());
+      item.setCompleted(newItem.isCompleted());
       return item;
+    }).orElseGet(() -> {
+      save(newItem);
+      return newItem;
     });
   }
 

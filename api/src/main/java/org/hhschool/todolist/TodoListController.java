@@ -1,13 +1,7 @@
-package org.hhschool.todolist.controller;
+package org.hhschool.todolist;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-
-import org.hhschool.todolist.converter.TodoItemConverter;
-import org.hhschool.todolist.dao.TodoListDao;
-import org.hhschool.todolist.dto.TodoItemDescriptionDto;
-import org.hhschool.todolist.dto.TodoItemDto;
-import org.hhschool.todolist.dto.TodoItemStatusDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,26 +45,11 @@ public class TodoListController {
     response.addHeader("Location", resourceLocation);
   }
 
-  @PutMapping("/items/{id}/description")
+  @PutMapping("/items")
   @ResponseBody
-  public TodoItemDto updateItemDescription(
-    @Valid @RequestBody TodoItemDescriptionDto descriptionDto,
-    @PathVariable Long id) {
-    return todoListDao.get(id).map(item -> {
-      item.setDescription(descriptionDto.getDescription());
-      return TodoItemConverter.toDto(item);
-    }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-  }
-
-  @PutMapping("/items/{id}/status")
-  @ResponseBody
-  public TodoItemDto updateItemStatus(
-    @Valid @RequestBody TodoItemStatusDto statusDto,
-    @PathVariable Long id) {
-    return todoListDao.get(id).map(item -> {
-      item.setStatus(statusDto.getStatus());
-      return TodoItemConverter.toDto(item);
-    }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+  public TodoItemDto update(@Valid @RequestBody TodoItemDto itemDto) {
+    TodoItem updatedItem = todoListDao.update(TodoItemConverter.fromDto(itemDto));
+    return TodoItemConverter.toDto(updatedItem);
   }
 
   @DeleteMapping("/items/{id}")
@@ -81,7 +60,7 @@ public class TodoListController {
 
   @DeleteMapping("/items")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  public void deleteAll(@PathVariable Long id) {
+  public void deleteAll() {
     todoListDao.deleteAll();
   }
 }
