@@ -6,24 +6,22 @@
      * Creates a new client side storage object and will create an empty
      * collection if no collection already exists.
      *
-     * @param {string} name The name of our DB we want to use
      * @param {function} callback Our fake DB uses callbacks because in
      * real life you probably would be making AJAX calls
      */
-    function Store(name, callback) {
+    function Store(backendUrl, callback) {
         callback = callback || function () {};
-        this._todos = []
+        this._backendUrl = backendUrl;
+        this._todos = [];
+        var self = this;
 
-        /*
-        this._dbName = name;
-
-        if (!localStorage.getItem(name)) {
-            var todos = [];
-
-            localStorage.setItem(name, JSON.stringify(todos));
-        } */
-
-        callback.call(this, this._todos);
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            self._todos = JSON.parse(xhttp.responseText);
+            callback.call(self, self._todos); 
+        }
+        xhttp.open("GET", this._backendUrl + "/items", false);
+        xhttp.send();
     }
 
     /**
@@ -43,8 +41,6 @@
         if (!callback) {
             return;
         }
-
-        // var todos = JSON.parse(localStorage.getItem(this._dbName));
 
         callback.call(this, this._todos.filter(function (todo) {
             for (var q in query) {
@@ -75,9 +71,11 @@
      * @param {number} id An optional param to enter an ID of an item to update
      */
     Store.prototype.save = function (updateData, callback, id) {
-        // var todos = JSON.parse(localStorage.getItem(this._dbName));
-
         callback = callback || function() {};
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("PUT", this._backendUrl + "/items", true);
+        xhttp.setRequestHeader('Content-type', 'application/json');
 
         // If an ID was actually given, find the item and update each property
         if (id) {
@@ -86,6 +84,7 @@
                     for (var key in updateData) {
                         this._todos[i][key] = updateData[key];
                     }
+                    xhttp.send(JSON.stringify(this._todos[i]));
                     break;
                 }
             }
@@ -97,7 +96,7 @@
             updateData.id = new Date().getTime();
 
             this._todos.push(updateData);
-            // localStorage.setItem(this._dbName, JSON.stringify(todos));
+            xhttp.send(JSON.stringify(updateData));
             callback.call(this, [updateData]);
         }
     };
@@ -109,16 +108,18 @@
      * @param {function} callback The callback to fire after saving
      */
     Store.prototype.remove = function (id, callback) {
-        // var todos = JSON.parse(localStorage.getItem(this._dbName));
-
         for (var i = 0; i < this._todos.length; i++) {
             if (this._todos[i].id == id) {
                 this._todos.splice(i, 1);
+
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("DELETE", this._backendUrl + '/items/' + id, true);
+                xhttp.send();
+
                 break;
             }
         }
 
-        // localStorage.setItem(this._dbName, JSON.stringify(todos));
         callback.call(this, this._todos);
     };
 
@@ -129,7 +130,9 @@
      */
     Store.prototype.drop = function (callback) {
         this._todos = [];
-        // localStorage.setItem(this._dbName, JSON.stringify(todos));
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("DELETE", this._backendUrl + "/items", true);
+        xhttp.send();
         callback.call(this, this._todos);
     };
 

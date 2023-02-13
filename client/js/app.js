@@ -4,18 +4,17 @@
 
     /**
      * Sets up a brand new Todo list.
-     *
-     * @param {string} name The name of your new to do list.
      */
-    function Todo(name) {
-        this.storage = new app.Store(name);
+    function Todo(backendUrl) {
+        this.storage = new app.Store(backendUrl);
         this.model = new app.Model(this.storage);
         this.template = new app.Template();
         this.view = new app.View(this.template);
         this.controller = new app.Controller(this.model, this.view);
     }
 
-    var todo = new Todo('todos-vanillajs');
+    var backendUrl = "http://localhost:8080/todolist";
+    var todo = new Todo(backendUrl);
 
     function setView() {
         todo.controller.setView(document.location.hash);
