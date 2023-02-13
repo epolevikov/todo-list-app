@@ -2,13 +2,6 @@
 (function (window) {
     'use strict';
 
-    /**
-     * Creates a new client side storage object and will create an empty
-     * collection if no collection already exists.
-     *
-     * @param {function} callback Our fake DB uses callbacks because in
-     * real life you probably would be making AJAX calls
-     */
     function Store(backendUrl, callback) {
         callback = callback || function () {};
         this._backendUrl = backendUrl;
@@ -28,7 +21,7 @@
      * Finds items based on a query given as a JS object
      *
      * @param {object} query The query to match against (i.e. {foo: 'bar'})
-     * @param {function} callback	 The callback to fire when the query has
+     * @param {function} callback The callback to fire when the query has
      * completed running
      *
      * @example
@@ -89,7 +82,6 @@
                 }
             }
 
-            // localStorage.setItem(this._dbName, JSON.stringify(todos));
             callback.call(this, this._todos);
         } else {
             // Generate an ID
