@@ -1,9 +1,16 @@
 package org.hhschool.todolist;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class TodoItem {
-  private final Long id;
+  @Id
+  private Long id;
   private String title;
   private Boolean completed;
+
+  public TodoItem() {}
 
   public TodoItem(Long id, String title, Boolean isCompleted) {
     this.id = id;
@@ -13,6 +20,10 @@ public class TodoItem {
 
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getTitle() {

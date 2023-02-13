@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.stream.StreamSupport;
+
 @Controller
 @RequestMapping(path = "/todolist")
 @CrossOrigin
@@ -20,7 +22,7 @@ public class TodoListController {
   @GetMapping("/items")
   @ResponseBody
   public Iterable<TodoItemDto> all() {
-    return todoListDao.all().stream()
+    return StreamSupport.stream(todoListDao.all().spliterator(), false)
       .map(TodoItemConverter::toDto)
       .toList();
   }
