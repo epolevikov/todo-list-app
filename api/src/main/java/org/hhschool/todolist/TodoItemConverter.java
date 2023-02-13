@@ -4,14 +4,14 @@ public class TodoItemConverter {
   public static TodoItemDto toDto(TodoItem item) {
     return new TodoItemDto(
       item.getId(),
-      item.getDescription(),
+      item.getTitle(),
       item.isCompleted());
   }
 
   public static TodoItem fromDto(TodoItemDto itemDto) {
     return new TodoItem(
       itemDto.getId(),
-      itemDto.getDescription(),
+      itemDto.getTitle(),
       itemDto.isCompleted());
   }
 }

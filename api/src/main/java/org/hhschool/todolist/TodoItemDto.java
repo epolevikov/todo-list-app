@@ -7,13 +7,13 @@ public class TodoItemDto {
   @NotNull
   private final Long id;
   @NotEmpty
-  private final String description;
+  private final String title;
   @NotNull
   private final Boolean completed;
 
-  public TodoItemDto(Long id, String description, Boolean isCompleted) {
+  public TodoItemDto(Long id, String title, Boolean isCompleted) {
     this.id = id;
-    this.description = description;
+    this.title = title;
     this.completed = isCompleted;
   }
 
@@ -21,8 +21,8 @@ public class TodoItemDto {
     return id;
   }
 
-  public String getDescription() {
-    return description;
+  public String getTitle() {
+    return title;
   }
 
   public boolean isCompleted() {

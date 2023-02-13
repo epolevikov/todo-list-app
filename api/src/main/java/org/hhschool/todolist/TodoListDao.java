@@ -2,14 +2,11 @@ package org.hhschool.todolist;
 
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class TodoListDao {
-  private final List<TodoItem> todos = new LinkedList<>();
+  private final List<TodoItem> todos = Collections.synchronizedList(new LinkedList<>());
 
   public List<TodoItem> all() {
     return todos;
@@ -27,7 +24,7 @@ public class TodoListDao {
 
   public TodoItem update(TodoItem newItem) {
     return get(newItem.getId()).map(item -> {
-      item.setDescription(newItem.getDescription());
+      item.setTitle(newItem.getTitle());
       item.setCompleted(newItem.isCompleted());
       return item;
     }).orElseGet(() -> {
