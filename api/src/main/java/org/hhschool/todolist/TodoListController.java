@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Controller
 @RequestMapping(path = "/todolist")
+@CrossOrigin
 public class TodoListController {
   @Autowired
   private TodoListDao todoListDao;
