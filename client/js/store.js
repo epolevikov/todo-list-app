@@ -12,16 +12,18 @@
 	 */
 	function Store(name, callback) {
 		callback = callback || function () {};
+		this._todos = []
 
+		/*
 		this._dbName = name;
 
 		if (!localStorage.getItem(name)) {
 			var todos = [];
 
 			localStorage.setItem(name, JSON.stringify(todos));
-		}
+		} */
 
-		callback.call(this, JSON.parse(localStorage.getItem(name)));
+		callback.call(this, this._todos);
 	}
 
 	/**
@@ -42,9 +44,9 @@
 			return;
 		}
 
-		var todos = JSON.parse(localStorage.getItem(this._dbName));
+		// var todos = JSON.parse(localStorage.getItem(this._dbName));
 
-		callback.call(this, todos.filter(function (todo) {
+		callback.call(this, this._todos.filter(function (todo) {
 			for (var q in query) {
 				if (query[q] !== todo[q]) {
 					return false;
@@ -61,7 +63,7 @@
 	 */
 	Store.prototype.findAll = function (callback) {
 		callback = callback || function () {};
-		callback.call(this, JSON.parse(localStorage.getItem(this._dbName)));
+		callback.call(this, this._todos);
 	};
 
 	/**
@@ -73,29 +75,29 @@
 	 * @param {number} id An optional param to enter an ID of an item to update
 	 */
 	Store.prototype.save = function (updateData, callback, id) {
-		var todos = JSON.parse(localStorage.getItem(this._dbName));
+		// var todos = JSON.parse(localStorage.getItem(this._dbName));
 
 		callback = callback || function() {};
 
 		// If an ID was actually given, find the item and update each property
 		if (id) {
-			for (var i = 0; i < todos.length; i++) {
-				if (todos[i].id === id) {
+			for (var i = 0; i < this._todos.length; i++) {
+				if (this._todos[i].id === id) {
 					for (var key in updateData) {
-						todos[i][key] = updateData[key];
+						this._todos[i][key] = updateData[key];
 					}
 					break;
 				}
 			}
 
-			localStorage.setItem(this._dbName, JSON.stringify(todos));
-			callback.call(this, todos);
+			// localStorage.setItem(this._dbName, JSON.stringify(todos));
+			callback.call(this, this._todos);
 		} else {
 			// Generate an ID
 			updateData.id = new Date().getTime();
 
-			todos.push(updateData);
-			localStorage.setItem(this._dbName, JSON.stringify(todos));
+			this._todos.push(updateData);
+			// localStorage.setItem(this._dbName, JSON.stringify(todos));
 			callback.call(this, [updateData]);
 		}
 	};
@@ -107,17 +109,17 @@
 	 * @param {function} callback The callback to fire after saving
 	 */
 	Store.prototype.remove = function (id, callback) {
-		var todos = JSON.parse(localStorage.getItem(this._dbName));
+		// var todos = JSON.parse(localStorage.getItem(this._dbName));
 
-		for (var i = 0; i < todos.length; i++) {
-			if (todos[i].id == id) {
-				todos.splice(i, 1);
+		for (var i = 0; i < this._todos.length; i++) {
+			if (this._todos[i].id == id) {
+				this._todos.splice(i, 1);
 				break;
 			}
 		}
 
-		localStorage.setItem(this._dbName, JSON.stringify(todos));
-		callback.call(this, todos);
+		// localStorage.setItem(this._dbName, JSON.stringify(todos));
+		callback.call(this, this._todos);
 	};
 
 	/**
@@ -126,9 +128,9 @@
 	 * @param {function} callback The callback to fire after dropping the data
 	 */
 	Store.prototype.drop = function (callback) {
-		var todos = [];
-		localStorage.setItem(this._dbName, JSON.stringify(todos));
-		callback.call(this, todos);
+		this._todos = [];
+		// localStorage.setItem(this._dbName, JSON.stringify(todos));
+		callback.call(this, this._todos);
 	};
 
 	// Export to window
