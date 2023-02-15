@@ -1,4 +1,4 @@
-package org.hhschool.todolist;
+package org.hhschool.todolist.todoitem;
 
 public class TodoItemConverter {
   public static TodoItemDto toDto(TodoItem item) {

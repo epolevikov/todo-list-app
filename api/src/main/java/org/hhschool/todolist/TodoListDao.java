@@ -1,5 +1,8 @@
 package org.hhschool.todolist;
 
+import org.hhschool.todolist.repository.TodoItemFilterCondition;
+import org.hhschool.todolist.todoitem.TodoItem;
+import org.hhschool.todolist.repository.TodoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,31 +13,33 @@ public class TodoListDao {
   @Autowired
   private TodoItemRepository todoItemRepository;
 
-  public Iterable<TodoItem> all() {
-    return todoItemRepository.findAll();
+  public Iterable<TodoItem> findAllItems(TodoItemFilterCondition filterCondition) {
+    return (filterCondition == null) ?
+      todoItemRepository.findAll() :
+      todoItemRepository.findAllItems(filterCondition);
   }
 
-  public Optional<TodoItem> get(Long id) {
+  public Optional<TodoItem> findItemById(Long id) {
     return todoItemRepository.findById(id);
   }
 
-  public TodoItem save(TodoItem item) {
+  public TodoItem saveItem(TodoItem item) {
     return todoItemRepository.save(item);
   }
 
-  public TodoItem update(TodoItem newItem) {
-    return get(newItem.getId()).map(item -> {
+  public TodoItem updateItem(TodoItem newItem) {
+    return findItemById(newItem.getId()).map(item -> {
       item.setTitle(newItem.getTitle());
       item.setCompleted(newItem.isCompleted());
-      return save(item);
-    }).orElseGet(() -> save(newItem));
+      return saveItem(item);
+    }).orElseGet(() -> saveItem(newItem));
   }
 
-  public void delete(Long id) {
+  public void deleteItem(Long id) {
     todoItemRepository.deleteById(id);
   }
 
-  public void deleteAll() {
+  public void deleteAllItems() {
     todoItemRepository.deleteAll();
   }
 }

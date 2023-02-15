@@ -1,4 +1,4 @@
-package org.hhschool.todolist;
+package org.hhschool.todolist.todoitem;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

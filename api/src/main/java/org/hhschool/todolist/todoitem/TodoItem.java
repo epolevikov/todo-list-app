@@ -1,4 +1,4 @@
-package org.hhschool.todolist;
+package org.hhschool.todolist.todoitem;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
