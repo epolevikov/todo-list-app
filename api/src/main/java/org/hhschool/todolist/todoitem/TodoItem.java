@@ -34,7 +34,7 @@ public class TodoItem {
     this.title = title;
   }
 
-  public boolean isCompleted() {
+  public Boolean isCompleted() {
     return completed;
   }
 

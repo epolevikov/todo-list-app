@@ -25,7 +25,7 @@ public class TodoItemDto {
     return title;
   }
 
-  public boolean isCompleted() {
+  public Boolean isCompleted() {
     return completed;
   }
 }

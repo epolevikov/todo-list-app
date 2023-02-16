@@ -1,6 +1,6 @@
 package org.hhschool.todolist;
 
-import org.hhschool.todolist.repository.TodoItemFilterCondition;
+import org.hhschool.todolist.todoitem.TodoItemQueryParams;
 import org.hhschool.todolist.todoitem.TodoItem;
 import org.hhschool.todolist.todoitem.TodoItemConverter;
 import org.hhschool.todolist.todoitem.TodoItemDto;
@@ -26,8 +26,14 @@ public class TodoListResource {
 
   @GetMapping("/items")
   @ResponseBody
-  public Iterable<TodoItemDto> findAllItems(@RequestBody(required = false) TodoItemFilterCondition filterCondition) {
-    return StreamSupport.stream(todoListService.findAllItems(filterCondition).spliterator(), false)
+  public Iterable<TodoItemDto> findAllItems(
+    @RequestParam(required = false) Long id,
+    @RequestParam(required = false) String title,
+    @RequestParam(required = false) Boolean completed
+  ) {
+    TodoItemQueryParams queryParams = new TodoItemQueryParams(id, title, completed);
+    Iterable<TodoItem> items = todoListService.findAllItems(queryParams);
+    return StreamSupport.stream(items.spliterator(), false)
       .map(TodoItemConverter::toDto)
       .toList();
   }
@@ -55,10 +61,20 @@ public class TodoListResource {
 
   @PutMapping("/items")
   @ResponseBody
-  public TodoItemDto updateItem(@Valid @RequestBody TodoItemDto itemDto) {
-    TodoItem updatedItem = todoListService.updateItem(TodoItemConverter.fromDto(itemDto));
-    return TodoItemConverter.toDto(updatedItem);
+  public TodoItemDto replaceItem(@Valid @RequestBody TodoItemDto itemDto) {
+    TodoItem replacedItem = todoListService.replaceItem(TodoItemConverter.fromDto(itemDto));
+    return TodoItemConverter.toDto(replacedItem);
   }
+
+  @PatchMapping("/items/{id}")
+  @ResponseBody
+  public TodoItemDto updateItem(@RequestBody TodoItemDto itemDto, @PathVariable Long id) {
+    TodoItem item = TodoItemConverter.fromDto(itemDto);
+    return todoListService.updateItem(item, id)
+      .map(TodoItemConverter::toDto)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+  }
+
 
   @DeleteMapping("/items/{id}")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
