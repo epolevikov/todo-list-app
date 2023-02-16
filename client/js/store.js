@@ -5,14 +5,15 @@
     function Store(backendUrl, callback) {
         callback = callback || function () {};
         this._backendUrl = backendUrl;
-        this._todos = [];
-        var self = this;
 
         const xhttp = new XMLHttpRequest();
+        var self = this;
+
         xhttp.onload = function() {
-            self._todos = JSON.parse(xhttp.responseText);
-            callback.call(self, self._todos); 
+            var todos = JSON.parse(xhttp.responseText);
+            callback.call(self, todos); 
         }
+
         xhttp.open("GET", this._backendUrl + "/items", false);
         xhttp.send();
     }
@@ -35,14 +36,20 @@
             return;
         }
 
-        callback.call(this, this._todos.filter(function (todo) {
-            for (var q in query) {
-                if (query[q] !== todo[q]) {
-                    return false;
-                }
-            }
-            return true;
-        }));
+        var queryString = Object.keys(query).map(function(key) {
+            return key + '=' + query[key]
+        }).join('&');
+
+        const xhttp = new XMLHttpRequest();
+        var self = this;
+
+        xhttp.onload = function() {
+            var todos = JSON.parse(xhttp.responseText);
+            callback.call(self, todos); 
+        }
+        
+        xhttp.open("GET", this._backendUrl + "/items" + "?" + queryString, false);
+        xhttp.send();
     };
 
     /**
@@ -52,7 +59,17 @@
      */
     Store.prototype.findAll = function (callback) {
         callback = callback || function () {};
-        callback.call(this, this._todos);
+
+        const xhttp = new XMLHttpRequest();
+        var self = this;
+
+        xhttp.onload = function() {
+            var todos = JSON.parse(xhttp.responseText);
+            callback.call(self, todos); 
+        }
+        
+        xhttp.open("GET", this._backendUrl + "/items", false);
+        xhttp.send();
     };
 
     /**
@@ -65,32 +82,26 @@
      */
     Store.prototype.save = function (updateData, callback, id) {
         callback = callback || function() {};
-
         const xhttp = new XMLHttpRequest();
-        xhttp.open("PUT", this._backendUrl + "/items", true);
-        xhttp.setRequestHeader('Content-type', 'application/json');
+        var self = this;
 
-        // If an ID was actually given, find the item and update each property
-        if (id) {
-            for (var i = 0; i < this._todos.length; i++) {
-                if (this._todos[i].id === id) {
-                    for (var key in updateData) {
-                        this._todos[i][key] = updateData[key];
-                    }
-                    xhttp.send(JSON.stringify(this._todos[i]));
-                    break;
-                }
+        xhttp.onload = function() {
+            if (id) {
+                self.findAll(callback);
+            } else {
+                callback.call(self, [updateData]);
             }
-
-            callback.call(this, this._todos);
-        } else {
-            // Generate an ID
-            updateData.id = new Date().getTime();
-
-            this._todos.push(updateData);
-            xhttp.send(JSON.stringify(updateData));
-            callback.call(this, [updateData]);
         }
+
+        if (id) {
+            xhttp.open("PATCH", this._backendUrl + "/items/" + id, false);
+        } else {
+            updateData.id = new Date().getTime();
+            xhttp.open("PUT", this._backendUrl + "/items", false);
+        }
+
+        xhttp.setRequestHeader('Content-type', 'application/json');
+        xhttp.send(JSON.stringify(updateData));
     };
 
     /**
@@ -100,19 +111,15 @@
      * @param {function} callback The callback to fire after saving
      */
     Store.prototype.remove = function (id, callback) {
-        for (var i = 0; i < this._todos.length; i++) {
-            if (this._todos[i].id == id) {
-                this._todos.splice(i, 1);
+        const xhttp = new XMLHttpRequest();
+        var self = this;
 
-                const xhttp = new XMLHttpRequest();
-                xhttp.open("DELETE", this._backendUrl + '/items/' + id, true);
-                xhttp.send();
-
-                break;
-            }
+        xhttp.onload = function() {
+            self.findAll(callback);
         }
 
-        callback.call(this, this._todos);
+        xhttp.open("DELETE", this._backendUrl + '/items/' + id, false);
+        xhttp.send();
     };
 
     /**
@@ -121,11 +128,15 @@
      * @param {function} callback The callback to fire after dropping the data
      */
     Store.prototype.drop = function (callback) {
-        this._todos = [];
         const xhttp = new XMLHttpRequest();
-        xhttp.open("DELETE", this._backendUrl + "/items", true);
+        var self = this;
+
+        xhttp.onload = function() {
+            callback.call(self, []);
+        }
+
+        xhttp.open("DELETE", this._backendUrl + "/items", false);
         xhttp.send();
-        callback.call(this, this._todos);
     };
 
     // Export to window
