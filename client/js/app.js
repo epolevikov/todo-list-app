@@ -13,7 +13,7 @@
         this.controller = new app.Controller(this.model, this.view);
     }
 
-    var backendUrl = "http://localhost:8080/todolist";
+    var backendUrl = "http://localhost/todolist";
     var todo = new Todo(backendUrl);
 
     function setView() {

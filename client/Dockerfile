@@ -1,9 +1,8 @@
-FROM python:3.8-slim-buster
+FROM nginx:alpine-slim
 
 WORKDIR /todo-list-app/client
 
 COPY index.html .
 COPY styles/ ./styles
 COPY js/ ./js
-
-CMD ["python3", "-m", "http.server", "9000"]
+COPY nginx.conf /etc/nginx/conf.d/default.conf
