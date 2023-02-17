@@ -2,9 +2,9 @@
 (function (window) {
     'use strict';
 
-    function Store(backendUrl, callback) {
+    function Store(todoApiRoot, callback) {
         callback = callback || function () {};
-        this._backendUrl = backendUrl;
+        this._todoApiRoot = todoApiRoot;
 
         const xhttp = new XMLHttpRequest();
         var self = this;
@@ -14,7 +14,7 @@
             callback.call(self, todos); 
         }
 
-        xhttp.open("GET", this._backendUrl + "/items", false);
+        xhttp.open("GET", this._todoApiRoot + "/items", false);
         xhttp.send();
     }
 
@@ -48,7 +48,7 @@
             callback.call(self, todos); 
         }
         
-        xhttp.open("GET", this._backendUrl + "/items" + "?" + queryString, false);
+        xhttp.open("GET", this._todoApiRoot + "/items" + "?" + queryString, false);
         xhttp.send();
     };
 
@@ -68,7 +68,7 @@
             callback.call(self, todos); 
         }
         
-        xhttp.open("GET", this._backendUrl + "/items", false);
+        xhttp.open("GET", this._todoApiRoot + "/items", false);
         xhttp.send();
     };
 
@@ -94,10 +94,10 @@
         }
 
         if (id) {
-            xhttp.open("PATCH", this._backendUrl + "/items/" + id, false);
+            xhttp.open("PATCH", this._todoApiRoot + "/items/" + id, false);
         } else {
             updateData.id = new Date().getTime();
-            xhttp.open("PUT", this._backendUrl + "/items", false);
+            xhttp.open("PUT", this._todoApiRoot + "/items", false);
         }
 
         xhttp.setRequestHeader('Content-type', 'application/json');
@@ -118,7 +118,7 @@
             self.findAll(callback);
         }
 
-        xhttp.open("DELETE", this._backendUrl + '/items/' + id, false);
+        xhttp.open("DELETE", this._todoApiRoot + '/items/' + id, false);
         xhttp.send();
     };
 
@@ -135,7 +135,7 @@
             callback.call(self, []);
         }
 
-        xhttp.open("DELETE", this._backendUrl + "/items", false);
+        xhttp.open("DELETE", this._todoApiRoot + "/items", false);
         xhttp.send();
     };
 
