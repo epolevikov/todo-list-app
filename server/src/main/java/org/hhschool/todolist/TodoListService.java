@@ -36,13 +36,11 @@ public class TodoListService {
   public Optional<TodoItem> updateItem(TodoItem item, Long id) {
     return findItemById(id)
       .map(foundItem -> {
-        if (item.getTitle() != null) {
-          foundItem.setTitle(item.getTitle());
-        }
+        Optional.ofNullable(item.getTitle())
+          .ifPresent(foundItem::setTitle);
 
-        if (item.isCompleted() != null) {
-          foundItem.setCompleted(item.isCompleted());
-        }
+        Optional.ofNullable(item.isCompleted())
+          .ifPresent(foundItem::setCompleted);
 
         return saveItem(foundItem);
       }
