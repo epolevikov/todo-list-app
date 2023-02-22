@@ -2,6 +2,7 @@ package org.hhschool.todolist;
 
 import org.hhschool.todolist.todoitem.TodoItemQueryParams;
 import org.hhschool.todolist.todoitem.TodoItem;
+import org.hhschool.todolist.repository.TodoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,33 +11,49 @@ import java.util.Optional;
 @Component
 public class TodoListService {
   @Autowired
-  private TodoListDao todoListDao;
-
-  public Optional<TodoItem> findItemById(Long id) {
-    return todoListDao.findItemById(id);
-  }
+  private TodoItemRepository todoItemRepository;
 
   public Iterable<TodoItem> findAllItems(TodoItemQueryParams queryParams) {
-    return todoListDao.findAllItems(queryParams);
+      return todoItemRepository.findAllItems(queryParams);
+  }
+
+  public Optional<TodoItem> findItemById(Long id) {
+    return todoItemRepository.findById(id);
   }
 
   public TodoItem saveItem(TodoItem item) {
-    return todoListDao.saveItem(item);
+    return todoItemRepository.save(item);
   }
 
-  public TodoItem replaceItem(TodoItem item) {
-    return todoListDao.replaceItem(item);
+  public TodoItem replaceItem(TodoItem newItem) {
+    return findItemById(newItem.getId()).map(item -> {
+      item.setTitle(newItem.getTitle());
+      item.setCompleted(newItem.isCompleted());
+      return saveItem(item);
+    }).orElseGet(() -> saveItem(newItem));
   }
 
   public Optional<TodoItem> updateItem(TodoItem item, Long id) {
-    return todoListDao.updateItem(item, id);
+    return findItemById(id)
+      .map(foundItem -> {
+        if (item.getTitle() != null) {
+          foundItem.setTitle(item.getTitle());
+        }
+
+        if (item.isCompleted() != null) {
+          foundItem.setCompleted(item.isCompleted());
+        }
+
+        return saveItem(foundItem);
+      }
+    );
   }
 
   public void deleteItem(Long id) {
-    todoListDao.deleteItem(id);
+    todoItemRepository.deleteById(id);
   }
 
   public void deleteAllItems() {
-    todoListDao.deleteAllItems();
+    todoItemRepository.deleteAll();
   }
 }
