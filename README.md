@@ -23,7 +23,7 @@ docker compose up
 * **/todolist/items** — для работы со всеми элементами списка задач.
 * **/todolist/items/{id}** — для работы с конкретным элементом с указанным `id`.
 
-Для первого эндпоинта доступны `GET`, `POST`, `PUT`, `DELETE` методы. Для второго — `GET`, `PATCH`, `DELETE`. Ниже приведено подробное описание каждого из возможных запросов. 
+Для первого эндпоинта доступны методы `GET`, `POST`, и `DELETE`. Для второго — `GET`, `PATCH`, `DELETE`. Ниже приведено подробное описание каждого из возможных запросов. 
 
 ### GET /todolist/items
 
@@ -47,17 +47,17 @@ curl localhost/todolist/items?completed=false | json_pp
 [
    {
       "completed" : false,
-      "id" : 1676720391593,
+      "id" : 1,
       "title" : "wash dishes"
    },
    {
       "completed" : false,
-      "id" : 1676720445265,
+      "id" : 2,
       "title" : "go to the dentist"
    },
    {
       "completed" : false,
-      "id" : 1676720474153,
+      "id" : 3,
       "title" : "learn docker"
    }
 ]
@@ -71,13 +71,19 @@ curl localhost/todolist/items?completed=false | json_pp
 
 ```
 curl -X POST localhost/todolist/items \
-    -H "Content-Type: application/json" \
-    -d '{"id": 1676720474153, "title": "learn Spring", "completed": false}'
+    -H "Content-Type: text/plain" \
+    -d 'learn Spring'
 ```
 
-### PUT /todolist/items
+#### Пример ответа:
 
-Добавляет элемент список задач. Если элемент с указанным `id` уже существует, заменяет его на элемент, указанный в теле запроса.
+```
+{
+   "completed" : false,
+   "id" : 4,
+   "title" : "learn Spring"
+}
+```
 
 ### DELETE /todolist/items
 
@@ -90,7 +96,7 @@ curl -X POST localhost/todolist/items \
 #### Пример запроса:
 
 ```
-curl localhost/todolist/items/1676720474153 | json_pp
+curl localhost/todolist/items/4 | json_pp
 ```
 
 #### Пример ответа:
@@ -98,7 +104,7 @@ curl localhost/todolist/items/1676720474153 | json_pp
 ```
 {
    "completed" : false,
-   "id" : 1676720474153,
+   "id" : 4,
    "title" : "learn Spring"
 }
 ```
@@ -110,7 +116,7 @@ curl localhost/todolist/items/1676720474153 | json_pp
 #### Пример запроса:
 
 ```
-curl -X PATCH localhost/todolist/items/1676720474153 \
+curl -X PATCH localhost/todolist/items/4 \
     -H "Content-Type: application/json" \
     -d '{"completed": true}'
 ```
@@ -120,7 +126,7 @@ curl -X PATCH localhost/todolist/items/1676720474153 \
 ```
 {
    "completed" : true,
-   "id" : 1676720474153,
+   "id" : 4,
    "title" : "learn Spring"
 }
 ```
