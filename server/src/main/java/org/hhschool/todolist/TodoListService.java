@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Component
 public class TodoListService {
+  private final TodoItemRepository todoItemRepository;
+
   @Autowired
-  private TodoItemRepository todoItemRepository;
+  public TodoListService(TodoItemRepository todoItemRepository) {
+    this.todoItemRepository = todoItemRepository;
+  }
 
   public Iterable<TodoItem> findAllItems(TodoItemQueryParams queryParams) {
       return todoItemRepository.findAllItems(queryParams);

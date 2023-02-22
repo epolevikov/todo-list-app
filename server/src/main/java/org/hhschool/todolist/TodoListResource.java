@@ -34,8 +34,12 @@ import java.util.stream.StreamSupport;
 @RequestMapping(path = "/todolist")
 @CrossOrigin
 public class TodoListResource {
+  private final TodoListService todoListService;
+
   @Autowired
-  private TodoListService todoListService;
+  public TodoListResource(TodoListService todoListService) {
+    this.todoListService = todoListService;
+  }
 
   @GetMapping("/items")
   @ResponseBody
