@@ -7,11 +7,4 @@ public class TodoItemConverter {
       item.getTitle(),
       item.isCompleted());
   }
-
-  public static TodoItem fromDto(TodoItemDto itemDto) {
-    return new TodoItem(
-      itemDto.getId(),
-      itemDto.getTitle(),
-      itemDto.isCompleted());
-  }
 }

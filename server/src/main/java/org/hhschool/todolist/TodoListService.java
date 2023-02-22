@@ -1,5 +1,6 @@
 package org.hhschool.todolist;
 
+import org.hhschool.todolist.todoitem.TodoItemDtoPartial;
 import org.hhschool.todolist.todoitem.TodoItemQueryParams;
 import org.hhschool.todolist.todoitem.TodoItem;
 import org.hhschool.todolist.repository.TodoItemRepository;
@@ -25,28 +26,20 @@ public class TodoListService {
     return todoItemRepository.findById(id);
   }
 
-  public TodoItem saveItem(TodoItem item) {
-    return todoItemRepository.save(item);
+  public TodoItem saveItem(String itemTitle) {
+    return todoItemRepository.save(new TodoItem(itemTitle));
   }
 
-  public TodoItem replaceItem(TodoItem newItem) {
-    return findItemById(newItem.getId()).map(item -> {
-      item.setTitle(newItem.getTitle());
-      item.setCompleted(newItem.isCompleted());
-      return saveItem(item);
-    }).orElseGet(() -> saveItem(newItem));
-  }
-
-  public Optional<TodoItem> updateItem(TodoItem item, Long id) {
+  public Optional<TodoItem> updateItem(TodoItemDtoPartial itemDto, Long id) {
     return findItemById(id)
       .map(foundItem -> {
-        Optional.ofNullable(item.getTitle())
+        Optional.ofNullable(itemDto.title())
           .ifPresent(foundItem::setTitle);
 
-        Optional.ofNullable(item.isCompleted())
+        Optional.ofNullable(itemDto.completed())
           .ifPresent(foundItem::setCompleted);
 
-        return saveItem(foundItem);
+        return todoItemRepository.save(foundItem);
       }
     );
   }

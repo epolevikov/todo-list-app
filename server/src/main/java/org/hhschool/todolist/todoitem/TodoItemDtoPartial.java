@@ -1,7 +1,6 @@
 package org.hhschool.todolist.todoitem;
 
-public record TodoItemDto (
-  Long id,
+public record TodoItemDtoPartial(
   String title,
   Boolean completed)
 { }

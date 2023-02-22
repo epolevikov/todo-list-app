@@ -1,21 +1,23 @@
 package org.hhschool.todolist.todoitem;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class TodoItem {
   @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
   private String title;
   private Boolean completed;
 
   public TodoItem() {}
 
-  public TodoItem(Long id, String title, Boolean isCompleted) {
-    this.id = id;
+  public TodoItem(String title) {
     this.title = title;
-    this.completed = isCompleted;
+    this.completed = false;
   }
 
   public Long getId() {
