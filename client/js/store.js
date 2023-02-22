@@ -89,19 +89,20 @@
             if (id) {
                 self.findAll(callback);
             } else {
-                callback.call(self, [updateData]);
+                var newTodoItem = JSON.parse(xhttp.responseText);
+                callback.call(self, [newTodoItem]);
             }
         }
 
         if (id) {
             xhttp.open("PATCH", this._todoApiRoot + "/items/" + id, false);
+            xhttp.setRequestHeader('Content-type', 'application/json');
+            xhttp.send(JSON.stringify(updateData));
         } else {
-            updateData.id = new Date().getTime();
-            xhttp.open("PUT", this._todoApiRoot + "/items", false);
+            xhttp.open("POST", this._todoApiRoot + "/items", false);
+            xhttp.setRequestHeader('Content-type', 'text/plain');
+            xhttp.send(updateData.title);
         }
-
-        xhttp.setRequestHeader('Content-type', 'application/json');
-        xhttp.send(JSON.stringify(updateData));
     };
 
     /**
