@@ -6,7 +6,7 @@ import org.hhschool.todolist.repository.TodoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Optional;
 
 @Component
 public class TodoListDao {
