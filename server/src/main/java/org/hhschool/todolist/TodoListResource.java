@@ -69,7 +69,7 @@ public class TodoListResource {
   @PatchMapping("/items/{id}")
   @ResponseBody
   public TodoItemDto updateItem(@RequestBody TodoItemDtoPartial itemDto, @PathVariable Long id) {
-    if (itemDto.title() != null && itemDto.title().isEmpty()) {
+    if (itemDto.title() != null && itemDto.title().isBlank()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
