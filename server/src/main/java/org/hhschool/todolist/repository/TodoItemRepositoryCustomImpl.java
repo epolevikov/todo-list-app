@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.hhschool.todolist.todoitem.TodoItem;
-import org.hhschool.todolist.todoitem.TodoItemQueryParams;
+import org.hhschool.todolist.todoitem.TodoItemFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,23 +17,23 @@ public class TodoItemRepositoryCustomImpl implements TodoItemRepositoryCustom {
   private EntityManager entityManager;
 
   @Override
-  public Iterable<TodoItem> findAllItems(TodoItemQueryParams queryParams) {
+  public Iterable<TodoItem> findAllItems(TodoItemFilter todoItemFilter) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<TodoItem> query = cb.createQuery(TodoItem.class);
     Root<TodoItem> root = query.from(TodoItem.class);
 
     List<Predicate> predicates = new ArrayList<>();
 
-    if (queryParams.id() != null) {
-      predicates.add(cb.equal(root.get("id"), queryParams.id()));
+    if (todoItemFilter.id() != null) {
+      predicates.add(cb.equal(root.get("id"), todoItemFilter.id()));
     }
 
-    if (queryParams.title() != null) {
-      predicates.add(cb.like(root.get("title"), queryParams.title()));
+    if (todoItemFilter.title() != null) {
+      predicates.add(cb.like(root.get("title"), todoItemFilter.title()));
     }
 
-    if (queryParams.completed() != null) {
-      predicates.add(cb.equal(root.get("completed"), queryParams.completed()));
+    if (todoItemFilter.completed() != null) {
+      predicates.add(cb.equal(root.get("completed"), todoItemFilter.completed()));
     }
 
     query.select(root);

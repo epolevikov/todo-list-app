@@ -1,7 +1,7 @@
 package org.hhschool.todolist;
 
 import org.hhschool.todolist.todoitem.TodoItemDtoPartial;
-import org.hhschool.todolist.todoitem.TodoItemQueryParams;
+import org.hhschool.todolist.todoitem.TodoItemFilter;
 import org.hhschool.todolist.todoitem.TodoItem;
 import org.hhschool.todolist.repository.TodoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,8 @@ public class TodoListService {
     this.todoItemRepository = todoItemRepository;
   }
 
-  public Iterable<TodoItem> findAllItems(TodoItemQueryParams queryParams) {
-      return todoItemRepository.findAllItems(queryParams);
+  public Iterable<TodoItem> findAllItems(TodoItemFilter todoItemFilter) {
+      return todoItemRepository.findAllItems(todoItemFilter);
   }
 
   public Optional<TodoItem> findItemById(Long id) {

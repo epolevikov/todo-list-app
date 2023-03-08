@@ -1,6 +1,6 @@
 package org.hhschool.todolist.todoitem;
 
-public record TodoItemQueryParams(
+public record TodoItemFilter(
   Long id,
   String title,
   Boolean completed)

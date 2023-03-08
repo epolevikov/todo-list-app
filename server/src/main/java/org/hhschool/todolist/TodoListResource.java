@@ -4,7 +4,7 @@ import org.hhschool.todolist.todoitem.TodoItem;
 import org.hhschool.todolist.todoitem.TodoItemConverter;
 import org.hhschool.todolist.todoitem.TodoItemDto;
 import org.hhschool.todolist.todoitem.TodoItemDtoPartial;
-import org.hhschool.todolist.todoitem.TodoItemQueryParams;
+import org.hhschool.todolist.todoitem.TodoItemFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,8 +44,8 @@ public class TodoListResource {
     @RequestParam(required = false) String title,
     @RequestParam(required = false) Boolean completed
   ) {
-    TodoItemQueryParams queryParams = new TodoItemQueryParams(id, title, completed);
-    Iterable<TodoItem> items = todoListService.findAllItems(queryParams);
+    TodoItemFilter todoItemFilter = new TodoItemFilter(id, title, completed);
+    Iterable<TodoItem> items = todoListService.findAllItems(todoItemFilter);
     return StreamSupport.stream(items.spliterator(), false)
       .map(TodoItemConverter::toDto)
       .toList();
