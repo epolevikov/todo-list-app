@@ -1,0 +1,19 @@
+services:
+  client:
+    build: ./client
+    container_name: todo-list-client
+    ports:
+      - 80:80
+    depends_on:
+      - server
+  server:
+    build: ./server
+    container_name: todo-list-server
+    depends_on:
+      - database
+  database:
+    image: postgres:alpine
+    container_name: todo-list-db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=todolist
